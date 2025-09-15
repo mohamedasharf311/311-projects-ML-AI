@@ -1,0 +1,9 @@
+Age,Income,Gender,Profession,Purchased
+25,50000,Male,Engineer,1
+40,25000,Female,Nurse,0
+30,60000,Male,Doctor,1
+45,20000,Female,Teacher,0
+23,70000,Male,Engineer,1
+38,30000,Female,Nurse,0
+50,100000,Male,Lawyer,1
+28,40000,Male,Doctor,1
