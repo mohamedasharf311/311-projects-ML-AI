@@ -1,0 +1,27 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+
+# البيانات
+X = np.array([[50], [70], [100], [120], [150]])   # المساحات
+y = np.array([300, 400, 600, 700, 900])           # الأسعار
+
+# بناء النموذج
+model = LinearRegression()
+model.fit(X, y)
+
+# التوقع
+y_pred = model.predict(X)
+
+# طباعة النتائج
+print("الميل (coefficient):", model.coef_)       # الزيادة في السعر لكل متر زيادة
+print("المقطع (intercept):", model.intercept_)   # السعر عند مساحة = 0
+print("توقعات:", y_pred)
+
+# رسم البيانات والخط
+plt.scatter(X, y, color="blue", label="البيانات الحقيقية")
+plt.plot(X, y_pred, color="red", label="خط الانحدار")
+plt.xlabel("المساحة (متر مربع)")
+plt.ylabel("السعر (ألف جنيه)")
+plt.legend()
+plt.show()
