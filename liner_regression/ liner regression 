@@ -1,0 +1,23 @@
+# y = x * m + b المعادله
+import numpy as np
+
+import matplotlib.pyplot as plt
+
+# البيانات 
+X = np.array([1,2,3,4,5])
+Y= np.array([2,4,6,8,10])
+
+m = np.sum((X - np.mean(X)) * (Y - np.mean(Y))) / np.sum((X - np.mean(X))**2)
+b = np.mean(Y) - m * np.mean(X)
+ 
+ 
+y_pred = X * m + b
+
+
+plt.scatter(X, Y ,color="blue", label="Data points")
+plt.plot(X, y_pred, color="red", label="Best fit line")
+plt.xlabel("X")
+plt.ylabel("y")
+plt.legend()
+plt.show()
+
