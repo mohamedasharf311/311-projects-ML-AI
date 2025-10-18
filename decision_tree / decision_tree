@@ -1,1 +1,65 @@
-decision tree 
+import numpy as np
+
+# دالة لحساب Gini Impurity
+def gini(y):
+    classes, counts = np.unique(y, return_counts=True)
+    p = counts / counts.sum()
+    return 1 - np.sum(p**2)
+
+# دالة لتقسيم البيانات
+def split(X, y, feature, threshold):
+    left_mask = X[:, feature] <= threshold
+    right_mask = X[:, feature] > threshold
+    return X[left_mask], y[left_mask], X[right_mask], y[right_mask]
+
+# بناء الشجرة
+def build_tree(X, y, depth=0, max_depth=2):
+    # لو كل القيم من نفس الكلاس أو وصلنا للعمق المطلوب → ورقة (leaf)
+    if len(np.unique(y)) == 1 or depth == max_depth:
+        values, counts = np.unique(y, return_counts=True)
+        return values[np.argmax(counts)]
+    
+    n_samples, n_features = X.shape
+    best_feature, best_threshold, best_score = None, None, 1e9
+    best_splits = None
+
+    # جرب كل feature + threshold
+    for feature in range(n_features):
+        for threshold in np.unique(X[:, feature]):
+            X_left, y_left, X_right, y_right = split(X, y, feature, threshold)
+            if len(y_left) == 0 or len(y_right) == 0:
+                continue
+            score = (len(y_left)*gini(y_left) + len(y_right)*gini(y_right)) / n_samples
+            if score < best_score:
+                best_feature, best_threshold, best_score = feature, threshold, score
+                best_splits = (X_left, y_left, X_right, y_right)
+
+    # Recursive بناء الشجرة
+    X_left, y_left, X_right, y_right = best_splits
+    left_tree = build_tree(X_left, y_left, depth+1, max_depth)
+    right_tree = build_tree(X_right, y_right, depth+1, max_depth)
+
+    return (best_feature, best_threshold, left_tree, right_tree)
+
+# التنبؤ
+def predict_one(x, tree):
+    if not isinstance(tree, tuple):  # leaf
+        return tree
+    feature, threshold, left_tree, right_tree = tree
+    if x[feature] <= threshold:
+        return predict_one(x, left_tree)
+    else:
+        return predict_one(x, right_tree)
+
+def predict(X, tree):
+    return np.array([predict_one(x, tree) for x in X])
+
+
+# تجربة بسيطة
+X = np.array([[2], [3], [10], [19], [20]])
+y = np.array([0, 0, 1, 1, 1])  # labels
+
+tree = build_tree(X, y, max_depth=2)
+print("Tree:", tree)
+
+print("Predictions:", predict(X, tree)) 
